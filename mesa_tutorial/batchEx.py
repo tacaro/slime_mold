@@ -1,8 +1,3 @@
-# Running the model - script
-from MoneyModel import *
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
 from mesa.batchrunner import BatchRunner
 
 '''Running the batchrunner'''
@@ -24,8 +19,3 @@ batch_run = BatchRunner(
 )
 
 batch_run.run_all()
-
-run_data = batch_run.get_model_vars_dataframe()
-run_data.head()
-plt.scatter(run_data.N, run_data.Gini)
-plt.show()
