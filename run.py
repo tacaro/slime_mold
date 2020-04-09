@@ -5,19 +5,25 @@ from model import * # our model module
 
 # We need to provide that takes an agent, returns a portrayal object
 '''Universal Parameters'''
-width = 20 # width of grid
-height = 20 # height of grid
-slime_population = 25 # how many slime cells to add
-arena_size = 500 # grid cell width in pixels
+width = 100 # width of grid
+height = 100 # height of grid
+slime_population = 70 # how many slime cells to add
+arena_size = 750 # grid cell width in pixels
 
 def agent_portrayal(agent):
     if isinstance(agent, ChemAgent):
-        if agent.chem > 0:
+        if agent.chem > 0 and agent.chem < 2:
             portrayal = {"Shape": "circle",
                          "Color": "blue",
                          "Filled": "true",
                          "Layer": 0,
                          "r": agent.chem}
+        elif agent.chem >= 2: # max the radius at 2 so we don't overload the image
+            portrayal = {"Shape": "circle",
+                         "Color": "blue",
+                         "Filled": "true",
+                         "Layer": 0,
+                         "r": 2}
         else:
             portrayal = {"Shape": "circle",
                          "Color": "blue",
