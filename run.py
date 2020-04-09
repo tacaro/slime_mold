@@ -5,8 +5,8 @@ from model import * # our model module
 
 # We need to provide that takes an agent, returns a portrayal object
 '''Universal Parameters'''
-width = 10 # width of grid
-height = 10 # height of grid
+width = 20 # width of grid
+height = 20 # height of grid
 slime_population = 25 # how many slime cells to add
 arena_size = 500 # grid cell width in pixels
 
