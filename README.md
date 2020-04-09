@@ -10,6 +10,11 @@ $ pip install -r requirements.txt
 ```
 
 ## Usage
+To execute the model non-interactively, use the command-line.
+```
+$ python run_noviz.py
+```
+
 To run the model interactively in your browser, use
 ```
 $ mesa runserver
