@@ -10,15 +10,12 @@ $ pip install -r requirements.txt
 ```
 
 ## Usage
-To execute the model non-interactively, use the command-line.
+To run the model interactively in your browser, use
+
 ```
-$ python run_noviz.py
+$ python run.py
 ```
 
-To run the model interactively in your browser, use
-```
-$ mesa runserver
-```
 In a browser window, navigate to [http://127.0.0.1:8521/](http://127.0.0.1:8521/), press Reset, then Run.
 
 ## References
