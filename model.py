@@ -21,9 +21,16 @@ class ChemAgent(Agent):
         self.chem = 0
 
     def step(self):
+        '''
+        The agent shares chemical with surrounding cells through diffusion.
+        Chemical is also lost due to evaporation.
+        '''
         if self.chem > 0:
-            self.chem -= 0.01
-
+            for neighbor in self.model.grid.neighbor_iter(self.pos):
+                if isinstance(neighbor, ChemAgent):
+                    neighbor.chem += (self.chem * 0.2) # adds 20% of value to neighbor
+                    self.chem -= (self.chem * 0.2) # subtracts 20% of value from self
+            self.chem -= 0.001 # loss due to evaporation
 
 class SlimeAgent(Agent):
     '''
@@ -35,11 +42,14 @@ class SlimeAgent(Agent):
         self.chem = 0
 
     def secrete(self):
+        '''The agent adds chemical to its surrounding cells'''
         for neighbor in self.model.grid.neighbor_iter(self.pos):
             if isinstance(neighbor, ChemAgent):
-                neighbor.chem += 0.02 # add 0.02 chemical to neighboring cells
+                neighbor.chem += 0.5 # add 0.02 chemical to neighboring cells
 
     def move(self):
+        '''The agent sniffs the surrounding cells for the highest concentration
+        of chemical - it them moves to that cell.'''
         neighbors = self.model.grid.get_neighbors(
             self.pos,
             moore=True,
@@ -52,7 +62,7 @@ class SlimeAgent(Agent):
         temp = 0
         while(curIndex < len(neighbors)):
             if(temp < neighbors[curIndex].chem):
-                temp = neighbors[curIndex].chem # save the obj
+                temp = neighbors[curIndex].chem # save the objattr
                 idx = curIndex # save the idx
             curIndex +=1 # increment idx
         optimal = neighbors[idx] # assign obj w/ said index
