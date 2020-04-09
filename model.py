@@ -18,11 +18,11 @@ class ChemAgent(Agent):
     '''
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.chem = 1
+        self.chem = 0
 
     def step(self):
         if self.chem > 0:
-            self.chem -= 0.05
+            self.chem -= 0.01
 
 
 class SlimeAgent(Agent):
@@ -35,11 +35,35 @@ class SlimeAgent(Agent):
         self.chem = 0
 
     def secrete(self):
-        # for neighbor in self.model.grid.neighbor_iter(self.pos)
-        pass
+        for neighbor in self.model.grid.neighbor_iter(self.pos):
+            if isinstance(neighbor, ChemAgent):
+                neighbor.chem += 0.02 # add 0.02 chemical to neighboring cells
+
+    def move(self):
+        neighbors = self.model.grid.get_neighbors(
+            self.pos,
+            moore=True,
+            include_center=False,
+            radius=1
+        )
+
+        curIndex = 0
+        idx =0
+        temp = 0
+        while(curIndex < len(neighbors)):
+            if(temp < neighbors[curIndex].chem):
+                temp = neighbors[curIndex].chem # save the obj
+                idx = curIndex # save the idx
+            curIndex +=1 # increment idx
+        optimal = neighbors[idx] # assign obj w/ said index
+
+        new_position = optimal.pos # identify the position of the optimal obj
+        self.model.grid.move_agent(self, new_position)
+
+
 
     def step(self):
-        # self.move()
+        self.move()
         self.secrete()
 
 
@@ -56,7 +80,7 @@ class SlimeModel(Model):
     '''
     def __init__(self, pop, width, height):
         self.N = pop # number of slime agents to spawn
-        self.grid = MultiGrid(width, height, True)
+        self.grid = MultiGrid(width, height, False) # torus = False
         self.schedule = RandomActivation(self)
         self.running = True
 
