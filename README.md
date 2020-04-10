@@ -9,6 +9,7 @@ Slime molds are a group of protist species that can live freely as unicellular o
 
 ### Agents
 There are two flavors of agent used in this model: chemicals and slime cells.
+
 **Chemicals**
 Chemicals are defined as a class, `ChemAgent`. They use class methods `evaporate` and `diffuse` to modify their chemical concentrations. Instants of the ChemAgent class are distributed uniformly across the model arena - their only purpose is to record the chemical concentration in their respective grid space. ChemAgents do not move but share their currency `self.chem` with their neighbors: this represents chemical diffusion.
 
