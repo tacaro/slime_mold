@@ -31,6 +31,7 @@ class ChemAgent(Agent):
                     self.chem -= (self.chem*0.2)
 
     def evaporate(self):
+        '''All chem agents lose chemical at 0.005 per step'''
         if self.chem > 0:
             self.chem -= 0.005
         else:
