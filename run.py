@@ -5,10 +5,11 @@ from model import * # our model module
 
 # We need to provide that takes an agent, returns a portrayal object
 '''Universal Parameters'''
-width = 100 # width of grid
-height = 100 # height of grid
-slime_population = 70 # how many slime cells to add
+width = 50 # width of grid
+height = 50 # height of grid
+slime_population = 100 # how many slime cells to add
 arena_size = 750 # grid cell width in pixels
+
 
 def agent_portrayal(agent):
     if isinstance(agent, ChemAgent):
@@ -25,11 +26,12 @@ def agent_portrayal(agent):
                          "Layer": 0,
                          "r": 2}
         else:
-            portrayal = {"Shape": "circle",
-                         "Color": "blue",
+            portrayal = {"Shape": "rect",
+                         "Color": "white",
                          "Filled": "true",
                          "Layer": 0,
-                         "r": 0}
+                         "w": 1,
+                         "h": 1}
     if isinstance(agent, SlimeAgent):
         portrayal = {"Shape": "circle",
                      "Color": "red",
