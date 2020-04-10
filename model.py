@@ -18,19 +18,31 @@ class ChemAgent(Agent):
     '''
     def __init__(self, unique_id, model):
         super().__init__(unique_id, model)
-        self.chem = 0
+        self.chem = 0.01
+
+    def diffuse(self):
+        if self.chem > 0:
+            for neighbor in self.model.grid.get_neighbors(self.pos,
+                                                          moore=True,
+                                                          include_center=False):
+                # given = 0 # track how much is given to neighbors
+                if isinstance(neighbor, ChemAgent):
+                    neighbor.chem += (self.chem*0.2) # adds 20% of value to neighbor
+                    self.chem -= (self.chem*0.2)
+
+    def evaporate(self):
+        if self.chem > 0:
+            self.chem -= 0.005
+        else:
+            self.chem = 0
 
     def step(self):
         '''
         The agent shares chemical with surrounding cells through diffusion.
         Chemical is also lost due to evaporation.
         '''
-        if self.chem > 0:
-            for neighbor in self.model.grid.neighbor_iter(self.pos):
-                if isinstance(neighbor, ChemAgent):
-                    neighbor.chem += (self.chem * 0.2) # adds 20% of value to neighbor
-                    self.chem -= (self.chem * 0.2) # subtracts 20% of value from self
-            self.chem -= 0.001 # loss due to evaporation
+        self.diffuse()
+        self.evaporate()
 
 class SlimeAgent(Agent):
     '''
@@ -45,7 +57,7 @@ class SlimeAgent(Agent):
         '''The agent adds chemical to its surrounding cells'''
         for neighbor in self.model.grid.neighbor_iter(self.pos):
             if isinstance(neighbor, ChemAgent):
-                neighbor.chem += 0.5 # add 0.02 chemical to neighboring cells
+                neighbor.chem += 0.05 # add 0.02 chemical to neighboring cells
 
     def move(self):
         '''The agent sniffs the surrounding cells for the highest concentration
@@ -70,11 +82,15 @@ class SlimeAgent(Agent):
         new_position = optimal.pos # identify the position of the optimal obj
         self.model.grid.move_agent(self, new_position)
 
-
-
     def step(self):
         self.move()
         self.secrete()
+
+
+
+
+
+
 
 
 
@@ -92,17 +108,17 @@ class SlimeModel(Model):
         self.N = pop # number of slime agents to spawn
         self.grid = MultiGrid(width, height, False) # torus = False
         self.schedule = RandomActivation(self)
-        self.running = True
+        self.running = True # True so that the model runs
 
-        # Create agents
+        # Spawn agents
 
         # Add chem agent to every grid cell
-        for row in range(height): # for every row
-            for col in range(width): # for every column
-                id = ((row*10) + col) # unique_id is row,col as 2 digit number
-                a = ChemAgent(id, self) # generate a chem agent
-                self.schedule.add(a) # add to the schedule
-                self.grid.place_agent(a, (row, col)) # place a chem agent
+        for coord in self.grid.coord_iter():
+            coord_content, x, y = coord # pull contents, x/y pos from coord obj
+            id = str(x + y*10) # unique_id is row,col as 2 digit number
+            a = ChemAgent(id, self) # instantiate a chem agent
+            self.schedule.add(a) # add to the schedule
+            self.grid.place_agent(a, (x, y)) # spawn the chem agent
 
         # Add slime agent randomly, population specified by N
         for i in range(self.N):
@@ -118,7 +134,21 @@ class SlimeModel(Model):
         agent_reporters={"Chem": "chem"}
         )
 
+    def validate(self):
+        chemCTR = 0
+        matrixsize = self.grid.height*self.grid.width
+        for agent in self.schedule.agents:
+            if isinstance(agent, ChemAgent):
+                chemCTR += 1
+        if chemCTR == (self.grid.height*self.grid.width):
+            pass
+        else:
+            print(chemCTR)
+            print("ERROR: Chem agents not filling space")
+            print(matrixsize)
+
     def step(self):
         '''advance the model by one step'''
+        self.validate()
         self.datacollector.collect(self)
         self.schedule.step()
