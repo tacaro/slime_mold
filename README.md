@@ -22,7 +22,7 @@ The model spawns agents in the following fashion:
 1. For every grid coordinate that exists, ChemAgents are instantiated and placed.
 2. For the value of `pop`, SlimeAgents are instantiated. These are placed at random locations in the grid space.
 
-The model uses the mesa datacollector function to report the total amount of chemical in the model arena. `compute_total_chemical()` is the global method responsible for this.
+The model uses the mesa datacollector function to report the total amount of chemical in the model arena. `compute_total_chemical(model)` is the global method responsible for this.
 
 ### Visualization, Server
 To visualize and interact with the model, `run.py` should be run from the command line. This file contains portrayal methods for each agent, model-level parameters (can be modified by user), visualization parameters, and server information. The port used is `server.port = 8251 # the default port`.
