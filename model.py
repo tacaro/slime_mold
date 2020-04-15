@@ -116,7 +116,7 @@ class SlimeModel(Model):
         # Add chem agent to every grid cell
         for coord in self.grid.coord_iter():
             coord_content, x, y = coord # pull contents, x/y pos from coord obj
-            id = str(x + y*10) # unique_id is row,col as 2 digit number
+            id = str(x)+'_'+str(y) # unique_id is x_y position
             a = ChemAgent(id, self) # instantiate a chem agent
             self.schedule.add(a) # add to the schedule
             self.grid.place_agent(a, (x, y)) # spawn the chem agent
