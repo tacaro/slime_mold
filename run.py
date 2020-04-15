@@ -2,14 +2,14 @@ from mesa.visualization.modules import ChartModule
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 from model import * # our model module
+import argparse
 
 # We need to provide that takes an agent, returns a portrayal object
 '''Universal Parameters'''
-width = 20 # width of grid
-height = 20 # height of grid
-slime_population = 50 # how many slime cells to add
+width = 50 # width of grid
+height = 50 # height of grid
+slime_population = 100 # how many slime cells to add
 arena_size = 750 # grid cell width in pixels
-
 
 def agent_portrayal(agent):
     if isinstance(agent, ChemAgent):
@@ -44,13 +44,17 @@ def agent_portrayal(agent):
 grid = CanvasGrid(agent_portrayal, width, height, arena_size, arena_size)
 
 # Create a chart for the total amount of chemical
-chart = ChartModule([{"Label": "Total_Chem",
+chart1 = ChartModule([{"Label": "Total_Chem",
                       "Color": "Black"}],
+                      data_collector_name='datacollector')
+
+chart2 = ChartModule([{"Label": "Average_Distance",
+                      "Color": "Red"}],
                       data_collector_name='datacollector')
 
 # Create and launch the server
 server = ModularServer(SlimeModel, # the model to feed in
-                       [grid, chart], # the list of objects to include in the viz
+                       [grid, chart1, chart2], # the list of objects to include in the viz
                        "Slime Model", # title
                        {"pop":slime_population, "width":width, "height":height}) # arguments for the model
 
