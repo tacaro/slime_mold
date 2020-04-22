@@ -43,22 +43,29 @@ class ChemAgent(Agent):
         self.chem = 0.01
 
     def diffuse(self):
-        if self.chem > 0:
-            # determine how much to give to neighbors
-            # dole it out evenly to the neighbors!
-            for neighbor in self.model.grid.get_neighbors(self.pos,
-                                                          moore=True,
-                                                          include_center=False):
-                # given = 0 # track how much is given to neighbors
-                if isinstance(neighbor, ChemAgent):
-                    # Adds 30% of value to neighbor
-                    neighbor.chem += (self.chem*0.3)
-                    self.chem -= (self.chem*0.3)
+        #figure out how many neighbors you have
+        n_neighbors = len(self.model.grid.get_neighbors(self.pos,
+                                                      moore=True,
+                                                      include_center=False))
+        #amount to diffuse into each neighbor. at first, just divided total
+        #self.chem by neighbors, but then each cell loses all of it's chem.
+        #so, now, only 1/2 of the total val leaks out. we can tweak this.
+        #but seems to work better to multiply by some scalar < 1.
+
+        amt_per_neighbor = 0.5*(self.chem/n_neighbors)
+
+        for neighbor in self.model.grid.get_neighbors(self.pos,
+                                                      moore=True,
+                                                      include_center=False):
+            if isinstance(neighbor, ChemAgent):
+                neighbor.chem += amt_per_neighbor
+                self.chem -= amt_per_neighbor
 
     def evaporate(self):
         '''All chem agents lose chemical at 0.005 per step'''
-        if self.chem > 0:
-            self.chem -= 0.005
+        evap_rate = 0.01
+        if self.chem > evap_rate: # so that self.chem stays pos
+            self.chem -= evap_rate
         else:
             self.chem = 0
 
@@ -84,7 +91,7 @@ class SlimeAgent(Agent):
         '''The agent adds chemical to its surrounding cells'''
         for neighbor in self.model.grid.neighbor_iter(self.pos):
             if isinstance(neighbor, ChemAgent):
-                neighbor.chem += 0.1  # add 0.1 chemical to neighboring cells
+                neighbor.chem += 0.02  # add 0.1 chemical to neighboring cells
 
     def move(self):
         '''The agent sniffs the surrounding cells for the highest concentration
@@ -92,7 +99,7 @@ class SlimeAgent(Agent):
         neighbors = self.model.grid.get_neighbors(
             self.pos,
             moore=True,
-            include_center=False,
+            include_center=True,
             radius=1
         )
 
@@ -137,19 +144,11 @@ class SlimeModel(Model):
 
         # Add chem agent to every grid cell
         for coord in self.grid.coord_iter():
-<<<<<<< HEAD
             coord_content, x, y = coord # pull contents, x/y pos from coord obj
             id = str(x)+'_'+str(y) # unique_id is x_y position
             a = ChemAgent(id, self) # instantiate a chem agent
             self.schedule.add(a) # add to the schedule
             self.grid.place_agent(a, (x, y)) # spawn the chem agent
-=======
-            coord_content, x, y = coord  # pull contents, x/y pos from coord
-            id = str(x) + '_' + str(y)  # create a unique_id
-            a = ChemAgent(id, self)  # instantiate a chem agent
-            self.schedule.add(a)  # add to the schedule
-            self.grid.place_agent(a, (x, y))  # spawn the chem agent
->>>>>>> 40cfbc0a652d64b97fa273043abdc963a4a426ae
 
         # Add slime agent randomly, population specified by N
         for i in range(self.N):
