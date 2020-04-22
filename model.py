@@ -44,6 +44,8 @@ class ChemAgent(Agent):
 
     def diffuse(self):
         if self.chem > 0:
+            # determine how much to give to neighbors
+            # dole it out evenly to the neighbors!
             for neighbor in self.model.grid.get_neighbors(self.pos,
                                                           moore=True,
                                                           include_center=False):
