@@ -5,7 +5,7 @@ Slime molds are a group of protist species that can live freely as unicellular o
 
 ## Model Description
 
-![Example Model Arena](example_grid.png)
+![Example Model Arena](example.png)
 *Typical model arena: slime cells (red) excrete chemical (blue) into their surrounding environment and move towards areas with higher chemical concentrations*
 
 ### Agents
