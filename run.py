@@ -6,9 +6,9 @@ import argparse
 
 # We need to provide that takes an agent, returns a portrayal object
 '''Universal Parameters'''
-width = 50 # width of grid
-height = 50 # height of grid
-slime_population = 100 # how many slime cells to add
+width = 20 # width of grid
+height = 20 # height of grid
+slime_population = 20 # how many slime cells to add
 arena_size = 750 # grid cell width in pixels
 
 def agent_portrayal(agent):
