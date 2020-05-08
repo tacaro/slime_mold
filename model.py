@@ -116,10 +116,14 @@ class SlimeAgent(Agent):
         new_position = optimal.pos  # identify the position of the optimal obj
         self.model.grid.move_agent(self, new_position)
 
-    def step(self):
-        self.move()
-        self.secrete()
 
+    def step(self):
+        if (self.unique_id%10 != 0):
+            self.move()
+            self.secrete()
+        else: #either quell secretion or moving
+            #self.secrete()
+            self.move()
 
 '''Above we define the agents'''
 '''Below we define the model'''
